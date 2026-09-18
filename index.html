@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEON CONTACT — Connect Beyond | Kostenlose Demo</title>
+<meta name="description" content="NEON CONTACT: CONNECT BEYOND — ein futuristisches 3D-Laserpuzzle im Cyberpunk-Look. Jetzt die kostenlose Demo spielen: Browser, Windows &amp; Linux.">
+<meta property="og:title" content="NEON CONTACT — Connect Beyond">
+<meta property="og:description" content="Lenke Laserstrahlen durch Spiegel, Teiler und Verstärker und stelle den Kontakt zu einer fernen Welt her. Kostenlose Demo jetzt verfügbar!">
+<meta property="og:image" content="assets/img/screenshot-01.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/img/icon.png">
+<style>
+  :root{
+    --bg:#03050b;
+    --bg2:#070c18;
+    --panel:#0b1224cc;
+    --cyan:#19dcff;
+    --magenta:#ff2fd1;
+    --green:#39ffb0;
+    --yellow:#ffe066;
+    --text:#e7f3ff;
+    --muted:#8fa3c4;
+    --border:#1c2b4a;
+    font-size:16px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(25,220,255,0.10), transparent 40%),
+      radial-gradient(circle at 85% 12%, rgba(255,47,209,0.10), transparent 45%),
+      radial-gradient(circle at 50% 90%, rgba(57,255,176,0.06), transparent 50%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    color:var(--text);
+    font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  a{color:var(--cyan);}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* Scanline / grid overlay */
+  .grid-overlay{
+    position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.35;
+    background-image:
+      linear-gradient(rgba(25,220,255,0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(25,220,255,0.045) 1px, transparent 1px);
+    background-size:42px 42px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 20%, black 0%, transparent 75%);
+  }
+
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:16px 24px;
+    background:rgba(3,5,11,0.75);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:2px;font-size:1.1rem;}
+  .brand img{width:30px;height:30px;filter:drop-shadow(0 0 8px var(--cyan));}
+  .brand span{color:var(--cyan);}
+  .brand strong{color:var(--magenta);}
+  nav.links{display:flex;gap:22px;font-size:0.92rem;}
+  nav.links a{color:var(--muted);text-decoration:none;transition:color .2s;}
+  nav.links a:hover{color:var(--cyan);}
+  .nav-cta{
+    background:linear-gradient(90deg,var(--cyan),var(--green));
+    color:#031018;padding:9px 18px;border-radius:999px;font-weight:700;
+    text-decoration:none;font-size:0.88rem;letter-spacing:0.5px;
+    box-shadow:0 0 22px rgba(25,220,255,0.35);
+  }
+
+  /* HERO */
+  .hero{position:relative;z-index:1;padding:74px 0 40px;text-align:center;}
+  .kicker{
+    display:inline-block;padding:6px 16px;border:1px solid var(--cyan);border-radius:999px;
+    color:var(--cyan);font-size:0.78rem;letter-spacing:3px;text-transform:uppercase;
+    box-shadow:0 0 18px rgba(25,220,255,0.25) inset;
+    margin-bottom:22px;
+  }
+  h1.title{
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    margin:0 0 12px;
+    font-weight:900;letter-spacing:2px;
+    text-shadow:0 0 22px rgba(25,220,255,0.55), 0 0 60px rgba(255,47,209,0.25);
+  }
+  h1.title .glow-magenta{color:var(--magenta);text-shadow:0 0 22px rgba(255,47,209,0.65);}
+  h1.title .glow-cyan{color:var(--cyan);}
+  .subtitle{
+    max-width:720px;margin:0 auto 34px;color:var(--muted);font-size:1.15rem;
+  }
+  .cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:56px;}
+  .btn{
+    padding:15px 30px;border-radius:10px;font-weight:800;letter-spacing:0.6px;
+    text-decoration:none;font-size:1rem;transition:transform .15s, box-shadow .15s;
+    display:inline-flex;align-items:center;gap:10px;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{
+    background:linear-gradient(90deg,var(--cyan),#33f2ff);
+    color:#021019;box-shadow:0 8px 30px rgba(25,220,255,0.35);
+  }
+  .btn-primary:hover{box-shadow:0 12px 40px rgba(25,220,255,0.55);}
+  .btn-secondary{
+    background:rgba(255,47,209,0.08);
+    border:1px solid var(--magenta);color:var(--magenta);
+  }
+  .btn-secondary:hover{background:rgba(255,47,209,0.18);box-shadow:0 8px 30px rgba(255,47,209,0.3);}
+  .btn-ghost{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);color:var(--text);
+  }
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+  /* Video */
+  .video-frame{
+    position:relative;max-width:920px;margin:0 auto;border-radius:18px;
+    border:1px solid var(--border);
+    box-shadow:0 0 0 1px rgba(25,220,255,0.15), 0 30px 80px rgba(0,0,0,0.6), 0 0 90px rgba(25,220,255,0.12);
+    overflow:hidden;background:#000;
+  }
+  .video-frame video{width:100%;display:block;background:#000;}
+  .video-tag{
+    position:absolute;top:14px;left:14px;background:rgba(3,5,11,0.7);
+    border:1px solid var(--magenta);color:var(--magenta);
+    padding:5px 12px;border-radius:999px;font-size:0.72rem;letter-spacing:2px;
+    text-transform:uppercase;backdrop-filter:blur(4px);
+  }
+
+  section{position:relative;z-index:1;padding:70px 0;}
+  h2.section-title{
+    font-size:clamp(1.8rem,4vw,2.6rem);text-align:center;margin:0 0 14px;
+    letter-spacing:1px;font-weight:800;
+  }
+  p.section-sub{text-align:center;color:var(--muted);max-width:640px;margin:0 auto 46px;}
+
+  /* Features */
+  .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:22px;}
+  .feature{
+    background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:26px;
+    transition:transform .2s, border-color .2s;
+  }
+  .feature:hover{transform:translateY(-4px);border-color:var(--cyan);}
+  .feature .icon{font-size:1.9rem;margin-bottom:14px;display:block;}
+  .feature h3{margin:0 0 8px;font-size:1.08rem;color:var(--cyan);}
+  .feature p{margin:0;color:var(--muted);font-size:0.92rem;}
+  .feature.magenta h3{color:var(--magenta);}
+  .feature.green h3{color:var(--green);}
+  .feature.yellow h3{color:var(--yellow);}
+
+  /* Gallery */
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;}
+  .gallery figure{
+    margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--border);
+    background:#000;position:relative;
+  }
+  .gallery img{width:100%;display:block;transition:transform .4s;}
+  .gallery figure:hover img{transform:scale(1.06);}
+  .gallery figcaption{
+    position:absolute;bottom:0;left:0;right:0;padding:10px 14px;font-size:0.82rem;
+    background:linear-gradient(180deg, transparent, rgba(0,0,0,0.85));color:var(--text);
+  }
+
+  /* Devices */
+  .devices{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px;}
+  .device{
+    text-align:center;background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:24px 16px;
+  }
+  .device .dot{
+    width:46px;height:46px;border-radius:50%;margin:0 auto 14px;
+    display:flex;align-items:center;justify-content:center;font-size:1.4rem;
+  }
+  .device.mirror .dot{background:rgba(25,220,255,0.12);border:1px solid var(--cyan);color:var(--cyan);}
+  .device.splitter .dot{background:rgba(255,47,209,0.12);border:1px solid var(--magenta);color:var(--magenta);}
+  .device.amplifier .dot{background:rgba(57,255,176,0.12);border:1px solid var(--green);color:var(--green);}
+  .device.target .dot{background:rgba(255,224,102,0.12);border:1px solid var(--yellow);color:var(--yellow);}
+  .device h4{margin:0 0 6px;font-size:1rem;}
+  .device p{margin:0;font-size:0.85rem;color:var(--muted);}
+
+  /* Download */
+  .download-panel{
+    background:linear-gradient(135deg, rgba(25,220,255,0.08), rgba(255,47,209,0.06));
+    border:1px solid var(--border);border-radius:22px;padding:52px 32px;text-align:center;
+    box-shadow:0 0 80px rgba(25,220,255,0.08) inset;
+  }
+  .platform-row{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+  .platform-card{
+    width:230px;background:rgba(3,5,11,0.55);border:1px solid var(--border);border-radius:16px;
+    padding:26px 20px;text-align:left;
+  }
+  .platform-card h4{margin:0 0 6px;display:flex;align-items:center;gap:8px;font-size:1.02rem;}
+  .platform-card p{color:var(--muted);font-size:0.82rem;margin:0 0 16px;}
+  .platform-card a{
+    display:block;text-align:center;padding:10px 0;border-radius:8px;font-weight:700;
+    text-decoration:none;font-size:0.88rem;
+  }
+  .platform-card.win a{background:var(--cyan);color:#021019;}
+  .platform-card.lin a{background:var(--green);color:#021019;}
+  .platform-card.web a{background:var(--magenta);color:#1a0313;}
+  .note{color:var(--muted);font-size:0.78rem;margin-top:26px;}
+
+  /* Footer */
+  footer{
+    border-top:1px solid var(--border);padding:34px 0;text-align:center;color:var(--muted);
+    font-size:0.85rem;
+  }
+  footer a{color:var(--muted);text-decoration:none;}
+  footer a:hover{color:var(--cyan);}
+
+  .badge-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+  .badge{
+    font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);
+    border:1px solid var(--border);padding:5px 12px;border-radius:999px;
+  }
+</style>
+</head>
+<body>
+<div class="grid-overlay"></div>
+
+<header class="nav">
+  <div class="brand"><img src="assets/img/icon.png" alt="Neon Contact Logo"><span>NEON</span><strong>CONTACT</strong></div>
+  <nav class="links">
+    <a href="#trailer">Trailer</a>
+    <a href="#features">Features</a>
+    <a href="#devices">Geräte</a>
+    <a href="#gallery">Galerie</a>
+    <a href="#download">Download</a>
+  </nav>
+  <a class="nav-cta" href="#download">Demo spielen</a>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="kicker">Pre-Alpha · Kostenlose Demo verfügbar</div>
+    <h1 class="title">
+      <span class="glow-cyan">NEON</span> <span class="glow-magenta">CONTACT</span><br>
+      Connect Beyond
+    </h1>
+    <p class="subtitle">
+      Ein futuristisches 3D-Laserpuzzle im Cyberpunk-Look. Drehe Spiegel, spalte Strahlen
+      auf, verstärke ihre Energie und stelle den Kontakt zu einer fernen Welt her —
+      bevor die Übertragung abbricht.
+    </p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#download">🚀 Kostenlose Demo herunterladen</a>
+      <a class="btn btn-secondary" href="#trailer">▶ Trailer ansehen</a>
+    </div>
+
+    <div id="trailer" class="video-frame">
+      <span class="video-tag">Gameplay-Demo</span>
+      <video controls preload="metadata" poster="assets/img/poster.jpg" playsinline>
+        <source src="assets/video/neon-contact-demo.webm" type="video/webm">
+        <source src="assets/video/neon-contact-demo.mp4" type="video/mp4">
+        Dein Browser unterstützt das Video-Tag nicht. Lade das
+        <a href="assets/video/neon-contact-demo.mp4">Demo-Video (MP4)</a> direkt herunter.
+      </video>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <h2 class="section-title">Warum <span style="color:var(--cyan)">NEON CONTACT</span> spielen?</h2>
+    <p class="section-sub">Echtzeit-Laserphysik, handgemachte Rätsel und ein Cyberpunk-Look, der auf jedem Rechner leuchtet.</p>
+    <div class="features">
+      <div class="feature">
+        <span class="icon">⚡</span>
+        <h3>Echte Laserphysik</h3>
+        <p>Ray-Casting in Echtzeit mit Reflexion, Aufsplittung und Verstärkung — keine vorgerenderten Animationen.</p>
+      </div>
+      <div class="feature magenta">
+        <span class="icon">🧩</span>
+        <h3>Handgebaute Rätsel</h3>
+        <p>Jedes Level verlangt präzise Winkel und cleveres Timing, um den Strahl ans Ziel zu lenken.</p>
+      </div>
+      <div class="feature green">
+        <span class="icon">🌌</span>
+        <h3>Isometrische 3D-Optik</h3>
+        <p>Dunkle Metallplattformen, selektiver Bloom und ein prozeduraler Planet mit Atmosphäre.</p>
+      </div>
+      <div class="feature yellow">
+        <span class="icon">🎮</span>
+        <h3>Überall spielbar</h3>
+        <p>Läuft direkt im Browser (WebGL2) und als native Demo für Windows &amp; Linux.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="devices" style="background:rgba(255,255,255,0.015);">
+  <div class="wrap">
+    <h2 class="section-title">Deine Werkzeuge</h2>
+    <p class="section-sub">Vier Gerätetypen, unendlich viele Wege, den Strahl ins Ziel zu lenken.</p>
+    <div class="devices">
+      <div class="device mirror">
+        <div class="dot">◆</div>
+        <h4>Spiegel</h4>
+        <p>Reflektiert den Laser nach Oberflächennormale — Klick zum Drehen in 15°-Schritten.</p>
+      </div>
+      <div class="device splitter">
+        <div class="dot">✂</div>
+        <h4>Teiler</h4>
+        <p>Spaltet einen Strahl in mehrere Pfade — perfekt für komplexe Routings.</p>
+      </div>
+      <div class="device amplifier">
+        <div class="dot">▲</div>
+        <h4>Verstärker</h4>
+        <p>Boostet die Energie farbkompatibler Laser, damit sie ihr Ziel erreichen.</p>
+      </div>
+      <div class="device target">
+        <div class="dot">●</div>
+        <h4>Empfänger</h4>
+        <p>Das Ziel jedes Levels: Stelle die Verbindung her und löse das Rätsel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="gallery">
+  <div class="wrap">
+    <h2 class="section-title">Screenshots</h2>
+    <p class="section-sub">Direkt aus der laufenden Three.js-Engine — keine Renderings, kein Fake.</p>
+    <div class="gallery">
+      <figure>
+        <img src="assets/img/screenshot-01.jpg" alt="Neon Contact Gameplay Screenshot 1" loading="lazy">
+        <figcaption>Verbindung hergestellt — Missionserfolg</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/img/screenshot-02.jpg" alt="Neon Contact Gameplay Screenshot 2" loading="lazy">
+        <figcaption>Aufgespaltene Laserpfade</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/img/screenshot-03.jpg" alt="Neon Contact Gameplay Screenshot 3" loading="lazy">
+        <figcaption>Isometrische Plattform bei Nacht</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/img/screenshot-04.jpg" alt="Neon Contact Gameplay Screenshot 4" loading="lazy">
+        <figcaption>Voller Bloom &amp; Reflexionen (GPU)</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<section id="download" style="background:rgba(255,255,255,0.015);">
+  <div class="wrap">
+    <div class="download-panel">
+      <div class="badge-row">
+        <span class="badge">Version 1.0.0-demo1</span>
+        <span class="badge">Kostenlos</span>
+        <span class="badge">Keine Kreditkarte nötig</span>
+      </div>
+      <h2 class="section-title" style="margin-bottom:6px;">Jetzt kostenlose Demo spielen</h2>
+      <p class="section-sub" style="margin-bottom:0;">
+        Verbinde dich noch heute mit einer fernen Welt. Wähle deine Plattform:
+      </p>
+      <div class="platform-row">
+        <div class="platform-card win">
+          <h4>🪟 Windows</h4>
+          <p>Installer mit Desktop-Verknüpfung. Keine Adminrechte nötig.</p>
+          <a href="downloads/NeonContact-Demo1-Setup.exe">Setup.exe herunterladen</a>
+        </div>
+        <div class="platform-card lin">
+          <h4>🐧 Linux</h4>
+          <p>Statisch gelinkte .run-Datei, keine Abhängigkeiten.</p>
+          <a href="downloads/NeonContact-Demo1-Linux-x86_64.run">.run herunterladen</a>
+        </div>
+        <div class="platform-card web">
+          <h4>🌐 Browser</h4>
+          <p>Sofort spielen — kein Download, WebGL2 erforderlich.</p>
+          <a href="https://github.com/Figarow/neon-contact-demo#readme">Quellcode &amp; Web-Build</a>
+        </div>
+      </div>
+      <p class="note">
+        Die Installer sind nicht digital signiert — Download-/SmartScreen-Warnungen sind daher möglich.
+        Alle Downloads laufen ausschließlich lokal auf deinem Rechner, keine Telemetrie, keine Konten.
+      </p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© 2024–2026 Neon Studios · NEON CONTACT: CONNECT BEYOND · Pre-Alpha Vertical Slice</p>
+    <p><a href="https://github.com/Figarow/neon-contact-demo">GitHub-Repository</a> · Gebaut mit Three.js</p>
+  </div>
+</footer>
+
+</body>
+</html>
