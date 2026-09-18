@@ -215,6 +215,49 @@
     font-size:0.72rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);
     border:1px solid var(--border);padding:5px 12px;border-radius:999px;
   }
+
+  /* Stats / counters */
+  .stats-bar{
+    display:flex;gap:18px;justify-content:center;flex-wrap:wrap;
+    padding:26px 0 6px;
+  }
+  .stat-card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:18px 28px;text-align:center;min-width:180px;
+  }
+  .stat-card .stat-value{
+    font-size:1.9rem;font-weight:900;line-height:1;
+    color:var(--cyan);text-shadow:0 0 18px rgba(25,220,255,0.4);
+  }
+  .stat-card.dl .stat-value{color:var(--magenta);text-shadow:0 0 18px rgba(255,47,209,0.4);}
+  .stat-card .stat-label{
+    margin-top:8px;font-size:0.74rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);
+  }
+  .stat-card .stat-value.loading{opacity:0.4;font-size:1.2rem;}
+  #visitor-badge-img{display:block;margin:0 auto;filter:drop-shadow(0 0 6px rgba(25,220,255,0.35));}
+
+  /* Donate */
+  .donate-card{
+    max-width:520px;margin:30px auto 0;
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;
+    padding:20px 24px;text-align:center;
+  }
+  .donate-card .donate-label{
+    font-size:0.74rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;
+  }
+  .donate-card .btc-address{
+    display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;
+  }
+  .donate-card code{
+    background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:8px;
+    padding:8px 12px;font-size:0.82rem;color:var(--yellow);word-break:break-all;
+  }
+  .donate-card button{
+    background:rgba(25,220,255,0.1);border:1px solid var(--cyan);color:var(--cyan);
+    border-radius:8px;padding:8px 14px;font-size:0.8rem;cursor:pointer;font-weight:700;
+  }
+  .donate-card button:hover{background:rgba(25,220,255,0.22);}
+  .donate-card .copied{color:var(--green);font-size:0.78rem;margin-top:8px;display:none;}
 </style>
 </head>
 <body>
@@ -360,12 +403,12 @@
         <div class="platform-card win">
           <h4>🪟 Windows</h4>
           <p>Installer mit Desktop-Verknüpfung. Keine Adminrechte nötig.</p>
-          <a href="downloads/NeonContact-Demo1-Setup.exe">Setup.exe herunterladen</a>
+          <a href="https://github.com/Figarow/neon-contact-demo/releases/download/demo1/NeonContact-Demo1-Setup.exe">Setup.exe herunterladen</a>
         </div>
         <div class="platform-card lin">
           <h4>🐧 Linux</h4>
           <p>Statisch gelinkte .run-Datei, keine Abhängigkeiten.</p>
-          <a href="downloads/NeonContact-Demo1-Linux-x86_64.run">.run herunterladen</a>
+          <a href="https://github.com/Figarow/neon-contact-demo/releases/download/demo1/NeonContact-Demo1-Linux-x86_64.run">.run herunterladen</a>
         </div>
         <div class="platform-card web">
           <h4>🌐 Browser</h4>
@@ -383,10 +426,58 @@
 
 <footer>
   <div class="wrap">
+    <div class="stats-bar">
+      <div class="stat-card">
+        <img id="visitor-badge-img" alt="Besucherzähler"
+             src="https://visitor-badge.laobi.icu/badge?page_id=figarow.neon-contact-demo&left_color=%23070C18&right_color=%2319DCFF&left_text=Besucher">
+        <div class="stat-label">Seitenbesucher</div>
+      </div>
+      <div class="stat-card dl">
+        <div class="stat-value loading" id="download-count">…</div>
+        <div class="stat-label">Demo-Downloads</div>
+      </div>
+    </div>
     <p>© 2026 Neon Studios · NEON CONTACT: CONNECT BEYOND · Pre-Alpha Vertical Slice</p>
     <p><a href="https://github.com/Figarow/neon-contact-demo">GitHub-Repository</a></p>
+
+    <div class="donate-card">
+      <div class="donate-label">☕ Projekt unterstützen · Bitcoin-Spende</div>
+      <div class="btc-address">
+        <code id="btc-address">bc1q9sajxgwkzshtz75f2sa6305s3cj65a94xn6hpu</code>
+        <button onclick="copyBtc()">Kopieren</button>
+      </div>
+      <div class="copied" id="copied-msg">✓ Adresse kopiert!</div>
+    </div>
   </div>
 </footer>
+
+<script>
+  function copyBtc() {
+    const text = document.getElementById('btc-address').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const msg = document.getElementById('copied-msg');
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 2000);
+    });
+  }
+</script>
+
+<script>
+  // Live-Downloadzähler aus den GitHub-Release-Assets (echte Downloads, kein Fake)
+  fetch('https://api.github.com/repos/Figarow/neon-contact-demo/releases/tags/demo1')
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(data => {
+      const total = (data.assets || []).reduce((sum, a) => sum + (a.download_count || 0), 0);
+      const el = document.getElementById('download-count');
+      el.textContent = total.toLocaleString('de-DE');
+      el.classList.remove('loading');
+    })
+    .catch(() => {
+      const el = document.getElementById('download-count');
+      el.textContent = '—';
+      el.classList.remove('loading');
+    });
+</script>
 
 </body>
 </html>
